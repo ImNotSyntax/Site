@@ -1,83 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic Site</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            background: #1a1a2e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            position: relative;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificando Chave</title>
+  <script>
+    // Pega o token da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userId = urlParams.get('user'); // Pega o ID do usuário
 
-        /* Futuristic background */
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://cdn.pixabay.com/photo/2016/11/22/19/05/space-1845037_960_720.jpg') no-repeat center center;
-            background-size: cover;
-            filter: blur(5px);
-            z-index: -1;
-        }
-
-        /* Animated title */
-        .title {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 40px;
-            font-weight: bold;
-            animation: moveTitle 3s infinite alternate;
-        }
-
-        @keyframes moveTitle {
-            0% {
-                transform: translateX(0) rotate(0deg);
-                color: #ff4c4c;
-            }
-            50% {
-                transform: translateX(-20px) rotate(5deg);
-                color: #ffdb3a;
-            }
-            100% {
-                transform: translateX(20px) rotate(-5deg);
-                color: #38c7ff;
-            }
-        }
-
-        /* Button */
-        .button {
-            background-color: mediumpurple;
-            padding: 15px 30px;
-            font-size: 20px;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #7a4fe0;
-        }
-    </style>
+    if (token && userId) {
+      // Faz a requisição para o seu Google Apps Script para verificar a chave
+      fetch(`https://script.google.com/macros/s/AKfycbyu_qXx3rXQmX4Xw_9c0O-dbAbSjxgmje1LOC3XpHRousUjW4S33CaoAjnDTyIzjwHoiQ/exec?action=verify&token=${token}&user=${userId}`)
+        .then(response => response.text())
+        .then(data => {
+          if (data.includes('Chave válida')) {
+            alert('Chave validada com sucesso!');
+            window.location.href = 'https://seuapp.com/sucesso'; // Redireciona para o sucesso
+          } else {
+            alert('Erro: Chave inválida ou expirada.');
+            window.location.href = 'https://seuapp.com/erro'; // Redireciona para a página de erro
+          }
+        })
+        .catch(error => {
+          alert('Erro ao verificar chave. Tente novamente.');
+          console.error('Erro ao verificar chave:', error);
+        });
+    } else {
+      alert('Token ou usuário ausente.');
+      window.location.href = 'https://seuapp.com/erro';
+    }
+  </script>
 </head>
 <body>
-
-    <div class="background"></div>
-    <div class="title">Syntax</div>
-    <button class="button">Get Key</button>
-
+  <h1>Verificando sua chave...</h1>
+  <p>Aguarde enquanto validamos sua chave...</p>
 </body>
 </html>
